@@ -22,19 +22,12 @@ class CreateTransactionEndpoint extends BaseRoute {
     const {
       amount,
       customerID,
-      destinationAccountID,
-      fee,
     } = params
 
     ctx.data = await stripe.charges.create({
       amount,
-      capture: false,
       currency: 'usd',
       customer: customerID,
-      destination: {
-        amount: amount - fee,
-        account: destinationAccountID,
-      },
     })
   }
 
