@@ -7,7 +7,6 @@ const PropTypes = require('prop-types')
 
 // Component imports
 const BaseRoute = require('../../helpers/BaseRoute')
-const notImplemented = require('../../helpers/notImplemented')
 
 
 
@@ -29,6 +28,7 @@ class CreateTransactionEndpoint extends BaseRoute {
 
     ctx.data = await stripe.charges.create({
       amount,
+      capture: false,
       currency: 'usd',
       customer: customerID,
       destination: {
@@ -38,29 +38,12 @@ class CreateTransactionEndpoint extends BaseRoute {
     })
   }
 
-  parse (params) {
-    const {
-      amount,
-      fee,
-    } = params
-
-    return {
-      ...params,
-      amount: parseInt(amount),
-      fee: parseInt(fee),
-    }
-  }
-
 
 
 
   /***************************************************************************\
     Getters
   \***************************************************************************/
-
-  get defaultProps () {
-    return {}
-  }
 
   get method () {
     return 'post'
