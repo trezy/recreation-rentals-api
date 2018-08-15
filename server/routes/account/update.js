@@ -19,6 +19,13 @@ class UpdateCustomerEndpoint extends BaseRoute {
     delete accountUpdates.customer
     delete accountUpdates.id
 
+    if (accountUpdates.external_account) {
+      accountUpdates.external_account = {
+        ...accountUpdates.external_account,
+        object: 'bank_account',
+      }
+    }
+
     const customerUpdates = { ...params.customer }
 
     const account = await stripe.accounts.update(id, accountUpdates)
