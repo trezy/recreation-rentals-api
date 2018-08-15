@@ -45,9 +45,7 @@ class CreateTransactionEndpoint extends BaseRoute {
   get propTypes () {
     return {
       amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      fee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       customerID: PropTypes.string.isRequired,
-      destinationAccountID: PropTypes.string.isRequired,
     }
   }
 }
