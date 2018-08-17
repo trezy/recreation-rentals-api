@@ -30,11 +30,11 @@ module.exports = function buildRoutesFromDirectoryStructure (router, currentPath
 
       buildRoutesFromDirectoryStructure(subrouter, currentPath + routeFilename)
 
-      return router.use(`/${entityType}`, subrouter.routes(), subrouter.allowedMethods())
+      router.use(`/${entityType}`, subrouter.routes(), subrouter.allowedMethods())
+    } else {
+      const route = new (require(routePath))
+
+      router[route.method.toLowerCase()](route.url, route._handleRequest)
     }
-
-    const route = new (require(routePath))
-
-    router[route.method.toLowerCase()](route.url, route._handleRequest)
   }
 }
