@@ -6,7 +6,9 @@ const PropTypes = require('prop-types')
 
 
 // Component imports
+const BankAccountShape = require('../../shapes/bankAccount')
 const BaseRoute = require('../../helpers/BaseRoute')
+const CreditCardShape = require('../../shapes/creditCard')
 
 
 
@@ -22,13 +24,20 @@ class CreateTransactionEndpoint extends BaseRoute {
     const {
       amount,
       customerID,
+      source,
     } = params
 
-    ctx.data = await stripe.charges.create({
+    const chargeInfo = {
       amount,
       currency: 'usd',
       customer: customerID,
-    })
+    }
+
+    if (source) {
+      chargeInfo.source = source
+    }
+
+    ctx.data = await stripe.charges.create(chargeInfo)
   }
 
 
@@ -46,6 +55,7 @@ class CreateTransactionEndpoint extends BaseRoute {
     return {
       amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       customerID: PropTypes.string.isRequired,
+      source: PropTypes.string,
     }
   }
 }
