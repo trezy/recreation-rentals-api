@@ -18,7 +18,7 @@ class UpdatePayoutEndpoint extends BaseRoute {
   \***************************************************************************/
 
   async handleRequest (ctx, params) {
-    console.log(ctx.body)
+    console.log(params)
     // const { stripe } = ctx
     // const {
     //   amount,
