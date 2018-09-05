@@ -23,21 +23,22 @@ class CreatePayoutEndpoint extends BaseRoute {
       amount,
       destinationAccountID,
       destinationBankAccountID,
+      transactionID,
     } = params
 
-    await stripe.transfers.create({
-      amount,
-      currency: 'usd',
-      destination: destinationAccountID,
-    })
+    const transaction = await stripe.charges.retrieve(transactionID)
 
-    stripe.payouts.create({
-      amount,
-      currency: 'usd',
-      destination: destinationBankAccountID,
-    }, {
-      stripe_account: destinationAccountID,
-    })
+    if (!transaction.metadata.readyToPay) {
+      await stripe.charges.update(transactionID, {
+        metadata: {
+          amount,
+          destinationAccountID,
+          destinationBankAccountID,
+          paid: false,
+          readyToPay: true,
+        },
+      })
+    }
   }
 
 
@@ -56,11 +57,12 @@ class CreatePayoutEndpoint extends BaseRoute {
       amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       destinationAccountID: PropTypes.string.isRequired,
       destinationBankAccountID: PropTypes.string.isRequired,
+      transactionID: PropTypes.string.isRequired,
     }
   }
 
   get url () {
-    return '/:destinationAccountID/:destinationBankAccountID'
+    return '/:destinationAccountID/:destinationBankAccountID/:transactionID'
   }
 }
 

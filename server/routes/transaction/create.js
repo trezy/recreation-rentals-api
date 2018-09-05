@@ -24,6 +24,8 @@ class CreateTransactionEndpoint extends BaseRoute {
     const {
       amount,
       customerID,
+      fee,
+      merchantAccountID,
       source,
     } = params
 
@@ -31,6 +33,14 @@ class CreateTransactionEndpoint extends BaseRoute {
       amount,
       currency: 'usd',
       customer: customerID,
+      destination: {
+        account: merchantAccountID,
+        amount: fee,
+      },
+      metadata: {
+        paid: false,
+        readyToPay: false,
+      },
     }
 
     if (source) {
@@ -54,7 +64,9 @@ class CreateTransactionEndpoint extends BaseRoute {
   get propTypes () {
     return {
       amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      fee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       customerID: PropTypes.string.isRequired,
+      merchantAccountID: PropTypes.string.isRequired,
       source: PropTypes.string,
     }
   }

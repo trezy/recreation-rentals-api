@@ -18,27 +18,48 @@ class UpdatePayoutEndpoint extends BaseRoute {
   \***************************************************************************/
 
   async handleRequest (ctx, params) {
-    console.log(params)
-    // const { stripe } = ctx
-    // const {
-    //   amount,
-    //   destinationAccountID,
-    //   destinationBankAccountID,
-    // } = params
+    const {
+      data: { object },
+      type: eventType,
+    } = params
 
-    // await stripe.transfers.create({
-    //   amount,
-    //   currency: 'usd',
-    //   destination: destinationAccountID,
-    // })
+    if (['charge.updated', 'charge.succeeded'].includes(eventType)) {
+      const transaction = object
+      const {
+        paid,
+        readyToPay,
+      } = transaction.metadata
 
-    // stripe.payouts.create({
-    //   amount,
-    //   currency: 'usd',
-    //   destination: destinationBankAccountID,
-    // }, {
-    //   stripe_account: destinationAccountID,
-    // })
+      if (readyToPay && !paid) {
+        const {
+          amount,
+          destinationAccountID,
+          destinationBankAccountID,
+          id,
+        } = transaction
+
+        await stripe.payouts.create({
+          amount,
+          currency: 'usd',
+          destination: destinationBankAccountID,
+          metadata: { transaction: id },
+        }, {
+          stripe_account: destinationAccountID,
+        })
+      }
+    }
+
+    if (eventType === 'payout.created') {
+      const payout = object
+      const transaction = await stripe.charges.retrieve(payout.metadata.transaction)
+
+      await stripe.charges.update(transaction.id, {
+        metadata: {
+          ...transaction.metadata,
+          paid: true,
+        },
+      })
+    }
   }
 
 
