@@ -39,6 +39,8 @@ class CreatePayoutEndpoint extends BaseRoute {
         },
       })
     }
+
+    ctx.status = 202
   }
 
 

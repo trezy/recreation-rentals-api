@@ -25,7 +25,10 @@ class BaseRoute {
 
     try {
       await this.handleRequest(ctx, params)
-      ctx.status = 200
+
+      if (!ctx.status) {
+        ctx.status = 200
+      }
     } catch (error) {
       ctx.errors = [...(ctx.errors || []), error]
       ctx.status = 400
