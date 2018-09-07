@@ -35,7 +35,7 @@ class CreateTransactionEndpoint extends BaseRoute {
       customer: customerID,
       destination: {
         account: merchantAccountID,
-        amount: fee,
+        amount: amount - fee,
       },
       metadata: {
         paid: false,
