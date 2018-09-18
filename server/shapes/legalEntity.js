@@ -24,4 +24,5 @@ module.exports = {
   maiden_name: PropTypes.string,
   personal_address: PropTypes.exact(AddressShape),
   type: PropTypes.oneOf(['company', 'individual']),
+  ssn_last_4: PropTypes.string,
 }
