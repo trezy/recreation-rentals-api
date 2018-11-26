@@ -18,10 +18,7 @@ class CreateCustomerEndpoint extends BaseRoute {
 
     ctx.data = await stripe.accounts.create({
       ...params,
-      payout_schedule: {
-        delay_days: 'minimum',
-        interval: 'manual',
-      },
+      payout_schedule: { interval: 'manual' },
       metadata: { customer: customer.id },
       type: 'custom',
     })
